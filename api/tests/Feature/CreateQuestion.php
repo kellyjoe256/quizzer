@@ -20,7 +20,7 @@ trait CreateQuestion
     {
         $quiz = $this->create_quiz();
 
-        return factory(Question::class)->create(
+        return Question::create(
             array_merge(
                 $this->question_data(),
                 ['quiz_id' => $quiz->id]

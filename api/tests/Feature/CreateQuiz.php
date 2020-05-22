@@ -19,13 +19,6 @@ trait CreateQuiz
 
     private function create_quiz()
     {
-        $user = $this->create_user();
-
-        return factory(Quiz::class)->create(
-            array_merge(
-                $this->quiz_data(),
-                ['user_id' => $user->id]
-            )
-        );
+        return Quiz::create($this->quiz_data());
     }
 }
