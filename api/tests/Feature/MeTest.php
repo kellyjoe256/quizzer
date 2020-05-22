@@ -35,7 +35,7 @@ class MeTest extends TestCase
 
         auth()->logout(true);
 
-        $this->get($this->me_route, $headers)
+        $this->json('GET', $this->me_route, [], $headers)
             ->assertStatus(401);
     }
 
@@ -45,13 +45,13 @@ class MeTest extends TestCase
         $token = null;
         $headers = ['Authorization' => "Bearer $token"];
 
-        $this->get($this->me_route, $headers)
+        $this->json('GET', $this->me_route, [], $headers)
             ->assertStatus(401);
     }
 
     /** @test */
     public function me_failure_with_no_credentials()
     {
-        $this->get($this->me_route)->assertStatus(401);
+        $this->json('GET', $this->me_route)->assertStatus(401);
     }
 }

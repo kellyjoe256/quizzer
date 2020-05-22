@@ -25,7 +25,7 @@ class AnswerTest extends TestCase
                     array_merge($data, [$field => ''])
                 );
 
-                $response->assertSessionHasErrors($field);
+                $response->assertStatus(422);
             });
     }
 
