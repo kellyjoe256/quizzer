@@ -1,28 +1,28 @@
 <?php
 
-namespace App\Http\Requests\Question;
+namespace App\Http\Requests\Answer;
 
 use Illuminate\Validation\Rule;
 
-class EditQuestionRequest extends AddQuestionRequest
+class EditAnswerRequest extends AddAnswerRequest
 {
     public function rules()
     {
         $rules = parent::rules();
 
-        $rules['text'] = [
+        $rules['value'] = [
             'required',
             'max:255',
-            Rule::unique('questions')->where(function ($query) {
+            Rule::unique('answers')->where(function ($query) {
                 $where_clause = "
-                    LOWER(text) = LOWER(?) AND quiz_id = ? AND id <> ?
+                    LOWER(value) = LOWER(?) AND question_id = ? AND id <> ?
                 ";
 
                 return $query->whereRaw(
                     $where_clause,
                     [
-                        $this->get('text'),
-                        $this->get('quiz_id'),
+                        $this->get('value'),
+                        $this->get('question_id'),
                         $this->route('id'),
                     ]
                 );

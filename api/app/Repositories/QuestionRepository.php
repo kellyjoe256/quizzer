@@ -12,7 +12,7 @@ class QuestionRepository extends AbstractRepository implements QuestionRepositor
         array $sort_order,
         array $relations = []
     ) {
-        $query = $this->entity->with($relations);
+        $query = $this->entity->with($relations)->select($this->columns);
         $this->orderResultSet($query, $sort_order);
         $query->where('quiz_id', $quiz_id);
 
@@ -22,5 +22,12 @@ class QuestionRepository extends AbstractRepository implements QuestionRepositor
     protected function entity()
     {
         return Question::class;
+    }
+
+    protected function setColumns()
+    {
+        $this->columns = [
+            'id', 'text', 'quiz_id', 'created_at',
+        ];
     }
 }

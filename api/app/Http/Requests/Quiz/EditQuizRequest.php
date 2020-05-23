@@ -27,10 +27,5 @@ class EditQuizRequest extends AddQuizRequest
         ];
 
         return $rules;
-        // return [
-        //     'name' => 'required|max:100|unique:quizzes',
-        //     'description' => 'required',
-        //     'user_id' => 'nullable|numeric|min:1|exists:users,id',
-        // ];
     }
 }

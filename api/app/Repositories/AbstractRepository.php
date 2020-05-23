@@ -12,14 +12,20 @@ abstract class AbstractRepository implements RepositoryInterface
      */
     protected $entity;
 
+    /**
+     * @var array
+     */
+    protected $columns;
+
     public function __construct()
     {
+        $this->setColumns();
         $this->entity = $this->resolveEntity();
     }
 
     public function paginate(array $sort_order, array $relations = [])
     {
-        $query = $this->entity->with($relations);
+        $query = $this->entity->with($relations)->select($this->columns);
         $this->orderResultSet($query, $sort_order);
 
         return $query->paginate(config('custom.per_page', 10));
@@ -27,7 +33,8 @@ abstract class AbstractRepository implements RepositoryInterface
 
     public function find($id, array $relations = [])
     {
-        return $this->entity->with($relations)->findOrFail($id);
+        return $this->entity->with($relations)->select($this->columns)
+            ->findOrFail($id);
     }
 
     public function create(array $data)
@@ -68,4 +75,6 @@ abstract class AbstractRepository implements RepositoryInterface
     }
 
     abstract protected function entity();
+
+    abstract protected function setColumns();
 }

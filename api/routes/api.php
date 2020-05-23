@@ -37,3 +37,19 @@ Route::group(
         Route::delete('{id}', 'QuestionController@delete');
     }
 );
+
+// /api/answers
+Route::group(
+    [
+        'prefix' => 'answers',
+        'namespace' => 'Answer',
+        'middleware' => ['auth.api'],
+    ],
+    function () {
+        Route::get('', 'AnswerController@index');
+        Route::post('', 'AnswerController@store');
+        Route::get('{id}', 'AnswerController@show');
+        Route::put('{id}', 'AnswerController@update');
+        Route::delete('{id}', 'AnswerController@delete');
+    }
+);
