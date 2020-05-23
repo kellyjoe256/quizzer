@@ -21,3 +21,19 @@ Route::group(['prefix' => 'quizzes', 'namespace' => 'Quiz'], function () {
         Route::delete('{id}', 'QuizController@delete');
     });
 });
+
+// /api/questions
+Route::group(
+    [
+        'prefix' => 'questions',
+        'namespace' => 'Question',
+        'middleware' => ['auth.api'],
+    ],
+    function () {
+        Route::get('', 'QuestionController@index');
+        Route::post('', 'QuestionController@store');
+        Route::get('{id}', 'QuestionController@show');
+        Route::put('{id}', 'QuestionController@update');
+        Route::delete('{id}', 'QuestionController@delete');
+    }
+);

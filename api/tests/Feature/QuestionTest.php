@@ -13,15 +13,19 @@ class QuestionTest extends TestCase
     /** @test */
     public function required_fields_for_question_creation()
     {
+        $token = $this->login();
+        $headers = ['Authorization' => "Bearer $token"];
+
         $data = $this->question_data();
 
         collect($data)
             ->keys()
-            ->each(function ($field) use ($data) {
+            ->each(function ($field) use ($data, $headers) {
                 $response = $this->json(
                     'POST',
                     $this->question_route,
-                    array_merge($data, [$field => ''])
+                    array_merge($data, [$field => '']),
+                    $headers
                 );
 
                 $response->assertStatus(422);
@@ -34,7 +38,9 @@ class QuestionTest extends TestCase
         $token = $this->login();
         $headers = ['Authorization' => "Bearer $token"];
 
+        $quiz = $this->create_quiz();
         $data = $this->question_data();
+        $data['quiz_id'] = $quiz->id;
 
         $this->json('POST', $this->question_route, $data, $headers)
             ->assertStatus(201)
@@ -49,11 +55,15 @@ class QuestionTest extends TestCase
         $token = $this->login();
         $headers = ['Authorization' => "Bearer $token"];
 
+        $quiz = $this->create_quiz();
         $data = $this->question_data();
-        $this->create_question();
+        $data['quiz_id'] = $quiz->id;
 
         $this->json('POST', $this->question_route, $data, $headers)
-            ->assertStatus(409);
+            ->assertStatus(201);
+
+        $this->json('POST', $this->question_route, $data, $headers)
+            ->assertStatus(422);
     }
 
     /** @test */
@@ -93,10 +103,11 @@ class QuestionTest extends TestCase
         $token = $this->login();
         $headers = ['Authorization' => "Bearer $token"];
 
-        $data = $this->question_data;
+        $data = $this->question_data();
         $question = $this->create_question();
 
         $data['text'] = 'What is this?'; // change question
+        $data['quiz_id'] = $question->id;
         $uri = sprintf('%s/%d', $this->question_route, $question->id);
 
         $this->json('PUT', $uri, $data, $headers)
@@ -130,9 +141,9 @@ class QuestionTest extends TestCase
         $this->create_question();
 
         $this->json('GET', $this->question_route, [], $headers)
-            ->assertStatus(206)
+            ->assertStatus(200)
             ->assertJsonStructure([
-                'data' => array_merge(['id'], array_keys($data)),
+                'data' => [array_merge(['id'], array_keys($data))],
             ]);
     }
 }

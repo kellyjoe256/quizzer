@@ -10,6 +10,9 @@ use App\Repositories\QuizRepository;
 
 class QuizController extends Controller
 {
+    /**
+     * @var QuizRepository
+     */
     private $quizzes;
 
     public function __construct(QuizRepository $quizzes)
@@ -31,13 +34,6 @@ class QuizController extends Controller
         return $this->quizzes->paginate($sort_order);
     }
 
-    public function show($id)
-    {
-        $quiz = $this->quizzes->find($id);
-
-        return new QuizResource($quiz);
-    }
-
     public function store(AddQuizRequest $request)
     {
         $quiz = $this->quizzes->create($request->all());
@@ -45,6 +41,13 @@ class QuizController extends Controller
         return (new QuizResource($quiz))
             ->response()
             ->setStatusCode(201);
+    }
+
+    public function show($id)
+    {
+        $quiz = $this->quizzes->find($id);
+
+        return new QuizResource($quiz);
     }
 
     public function update($id, EditQuizRequest $request)
