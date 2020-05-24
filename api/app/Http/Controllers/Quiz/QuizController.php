@@ -22,13 +22,11 @@ class QuizController extends Controller
 
     public function index()
     {
+        $user = request()->user();
         $sort_order = ['name' => 'ASC'];
 
-        if (request('user')) {
-            return $this->quizzes->findByUser(
-                (int) request('user'),
-                $sort_order
-            );
+        if (!$user->is_admin) {
+            return $this->quizzes->findByUser($user->id, $sort_order);
         }
 
         return $this->quizzes->paginate($sort_order);

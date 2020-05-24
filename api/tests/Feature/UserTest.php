@@ -40,7 +40,7 @@ class UserTest extends TestCase
         $this->json('POST', $this->user_route, $data, $headers)
             ->assertStatus(201)
             ->assertJsonStructure([
-                'data' => array_merge(['id'], array_keys($data)),
+                'data' => array_merge(['id'], $this->user_keys()),
             ]);
     }
 
@@ -57,7 +57,7 @@ class UserTest extends TestCase
             ->assertStatus(201);
 
         $this->json('POST', $this->user_route, $data, $headers)
-            ->assertStatus(409);
+            ->assertStatus(422);
     }
 
     /** @test */
@@ -69,13 +69,15 @@ class UserTest extends TestCase
         $data = $this->user_data();
         $data['email'] = 'janedoe@example.com';
 
-        $user = $this->create_user($data);
+        $response = $this->json('POST', $this->user_route, $data, $headers)
+            ->assertStatus(201);
+        $user = json_decode($response->getContent())->data;
         $uri = sprintf('%s/%d', $this->user_route, $user->id);
 
         $this->json('GET', $uri, [], $headers)
             ->assertStatus(200)
             ->assertJsonStructure([
-                'data' => array_merge(['id'], array_keys($data)),
+                'data' => array_merge(['id'], $this->user_keys()),
             ]);
     }
 
@@ -101,7 +103,9 @@ class UserTest extends TestCase
         $data = $this->user_data();
         $data['email'] = 'janedoe@example.com';
 
-        $user = $this->create_user($data);
+        $response = $this->json('POST', $this->user_route, $data, $headers)
+            ->assertStatus(201);
+        $user = json_decode($response->getContent())->data;
         $uri = sprintf('%s/%d', $this->user_route, $user->id);
 
         $data['email'] = 'new-email@example.com'; // change email
@@ -109,7 +113,7 @@ class UserTest extends TestCase
         $this->json('PUT', $uri, $data, $headers)
             ->assertStatus(200)
             ->assertJsonStructure([
-                'data' => array_merge(['id'], array_keys($data)),
+                'data' => array_merge(['id'], $this->user_keys()),
             ]);
     }
 
@@ -122,11 +126,26 @@ class UserTest extends TestCase
         $data = $this->user_data();
         $data['email'] = 'janedoe@example.com';
 
-        $user = $this->create_user($data);
+        $response = $this->json('POST', $this->user_route, $data, $headers)
+            ->assertStatus(201);
+        $user = json_decode($response->getContent())->data;
         $uri = sprintf('%s/%d', $this->user_route, $user->id);
 
         $this->json('DELETE', $uri, [], $headers)
             ->assertStatus(204);
+    }
+
+    /** @test */
+    public function users_are_listed_correctly()
+    {
+        $token = $this->login(true);
+        $headers = ['Authorization' => "Bearer $token"];
+
+        $this->json('GET', $this->user_route, [], $headers)
+            ->assertStatus(200)
+            ->assertJsonStructure([
+                'data' => [array_merge(['id'], $this->user_keys())],
+            ]);
     }
 
     public function all_http_methods_fail_for_non_admin()

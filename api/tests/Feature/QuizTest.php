@@ -127,13 +127,13 @@ class QuizTest extends TestCase
     /** @test */
     public function quizzes_are_listed_correctly()
     {
-        $this->create_quiz();
-        $data = $this->quiz_data();
+        $token = $this->login();
+        $headers = ['Authorization' => "Bearer $token"];
 
-        $this->json('GET', $this->quiz_route)
+        $this->json('GET', $this->quiz_route, [], $headers)
             ->assertStatus(200)
             ->assertJsonStructure([
-                'data' => [array_merge(['id'], array_keys($data))],
+                'data' => [],
             ]);
     }
 }

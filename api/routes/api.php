@@ -12,10 +12,10 @@ Route::group(['prefix' => 'auth', 'namespace' => 'Auth'], function () {
 
 // /api/quizzes
 Route::group(['prefix' => 'quizzes', 'namespace' => 'Quiz'], function () {
-    Route::get('', 'QuizController@index');
     Route::get('{id}', 'QuizController@show');
 
     Route::group(['middleware' => ['auth.api']], function () {
+        Route::get('', 'QuizController@index');
         Route::post('', 'QuizController@store');
         Route::put('{id}', 'QuizController@update');
         Route::delete('{id}', 'QuizController@delete');
@@ -51,5 +51,21 @@ Route::group(
         Route::get('{id}', 'AnswerController@show');
         Route::put('{id}', 'AnswerController@update');
         Route::delete('{id}', 'AnswerController@delete');
+    }
+);
+
+// /api/users
+Route::group(
+    [
+        'prefix' => 'users',
+        'namespace' => 'User',
+        'middleware' => ['auth.api', 'admin'],
+    ],
+    function () {
+        Route::get('', 'UserController@index');
+        Route::post('', 'UserController@store');
+        Route::get('{id}', 'UserController@show');
+        Route::put('{id}', 'UserController@update');
+        Route::delete('{id}', 'UserController@delete');
     }
 );

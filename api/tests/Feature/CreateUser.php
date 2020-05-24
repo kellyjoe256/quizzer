@@ -23,19 +23,27 @@ trait CreateUser
         return [
             'name' => 'John Doe',
             'email' => 'johndoe@example.com',
-            'password' => 'password',
+            'password' => '12345@Pa55!',
             'is_admin' => $this->get_is_admin(),
         ];
+    }
+
+    private function user_keys()
+    {
+        return collect($this->user_data())
+            ->except('password')
+            ->keys()
+            ->toArray();
     }
 
     private function create_user(array $new_user_data = [])
     {
         $data = count($new_user_data) ? $new_user_data : $this->user_data();
 
-        factory(User::class)->create(
+        User::create(
             array_merge(
                 $data,
-                ['password' => bcrypt(collect($data)->get('password', ''))]
+                ['password' => collect($data)->get('password', '')]
             )
         );
 
