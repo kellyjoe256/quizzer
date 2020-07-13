@@ -14,11 +14,6 @@ class QuestionResource extends JsonResource
      */
     public function toArray($request)
     {
-        return [
-            'id' => $this->id,
-            'text' => $this->text,
-            'created_at' => optional($this->created_at)->format('F jS, Y'),
-            'quiz_id' => $this->quiz_id,
-        ];
+        return parent::toArray($request);
     }
 }
