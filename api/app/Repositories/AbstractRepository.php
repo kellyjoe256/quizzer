@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Repositories\Contracts\RepositoryInterface;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 abstract class AbstractRepository implements RepositoryInterface
@@ -13,33 +14,26 @@ abstract class AbstractRepository implements RepositoryInterface
     protected $entity;
 
     /**
-     * @var array
+     * @var Builder|Model
      */
-    protected $columns;
+    protected $builder;
 
     public function __construct()
     {
-        $this->setColumns();
-        $this->entity = $this->resolveEntity();
-    }
+        $entity = $this->resolveEntity();
 
-    public function paginate(array $sort_order, array $relations = [])
-    {
-        $query = $this->entity->with($relations)->select($this->columns);
-        $this->orderResultSet($query, $sort_order);
-
-        return $query->paginate(config('custom.per_page', 10));
-    }
-
-    public function find($id, array $relations = [])
-    {
-        return $this->entity->with($relations)->select($this->columns)
-            ->findOrFail($id);
+        $this->entity = $entity;
+        $this->builder = $entity;
     }
 
     public function create(array $data)
     {
         return $this->entity->create($data);
+    }
+
+    public function find($id)
+    {
+        return $this->select()->findOrFail($id);
     }
 
     public function update($id, array $data)
@@ -58,11 +52,46 @@ abstract class AbstractRepository implements RepositoryInterface
         return $model;
     }
 
-    protected function orderResultSet($query, array $sort_order): void
+    public function with($relations)
+    {
+        $relations = is_array($relations) ? $relations : func_get_args();
+        $this->builder = $this->builder->with($relations);
+
+        return $this;
+    }
+
+    public function sort(array $sort_order)
     {
         foreach ($sort_order as $column => $direction) {
-            $query->orderBy($column, $direction);
+            $this->builder->orderBy($column, $direction);
         }
+
+        return $this;
+    }
+
+    public function paginate(int $limit = 10)
+    {
+        return $this->select()->paginate($limit);
+    }
+
+    public function get()
+    {
+        return $this->select()->get();
+    }
+
+    public function model()
+    {
+        return $this->entity;
+    }
+
+    protected function select()
+    {
+        return $this->builder->select($this->columns());
+    }
+
+    protected function columns(): array
+    {
+        return ['*'];
     }
 
     protected function resolveEntity(): Model
@@ -74,7 +103,5 @@ abstract class AbstractRepository implements RepositoryInterface
         return app()->make($this->entity());
     }
 
-    abstract protected function entity();
-
-    abstract protected function setColumns();
+    abstract protected function entity(): string;
 }
