@@ -64,7 +64,7 @@ class QuizTest extends TestCase
     /** @test */
     public function getting_an_existing_quiz_works()
     {
-        $token = $this->login();
+        $token = $this->login(true);
         $headers = ['Authorization' => "Bearer $token"];
 
         $data = $this->quiz_data();
