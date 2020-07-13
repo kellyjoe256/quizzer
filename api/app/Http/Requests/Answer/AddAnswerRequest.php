@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests\Answer;
 
+use App\Rules\IUnique;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class AddAnswerRequest extends FormRequest
 {
@@ -27,20 +27,15 @@ class AddAnswerRequest extends FormRequest
         return [
             'value' => [
                 'required',
-                'max:100',
-                Rule::unique('answers')->where(function ($query) {
-                    $where_clause = "
-                        LOWER(value) = LOWER(?) AND question_id = ?
-                    ";
-
-                    return $query->whereRaw(
-                        $where_clause,
-                        [
-                            $this->get('value'),
-                            $this->get('question_id'),
-                        ]
-                    );
-                }),
+                'max:255',
+                (new IUnique(
+                    'answers',
+                    'Answer',
+                    [
+                        'value' => $this->get('value'),
+                        'question_id' => $this->get('question_id'),
+                    ]
+                )),
             ],
             'is_true' => 'required|boolean',
             'question_id' => 'required|numeric|min:1|exists:questions,id',

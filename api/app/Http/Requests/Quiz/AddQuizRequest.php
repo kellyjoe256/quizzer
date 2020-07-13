@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests\Quiz;
 
+use App\Rules\IUnique;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class AddQuizRequest extends FormRequest
 {
@@ -28,14 +28,13 @@ class AddQuizRequest extends FormRequest
             'name' => [
                 'required',
                 'max:100',
-                Rule::unique('quizzes')->where(function ($query) {
-                    $where_clause = "LOWER(name) = LOWER(?)";
-
-                    return $query->whereRaw(
-                        $where_clause,
-                        [$this->get('name')]
-                    );
-                }),
+                (new IUnique(
+                    'quizzes',
+                    'Name',
+                    [
+                        'name' => $this->get('name'),
+                    ]
+                )),
             ],
             'description' => 'required',
             'user_id' => 'nullable|numeric|min:1|exists:users,id',

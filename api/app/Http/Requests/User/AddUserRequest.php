@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\User;
 
+use App\Rules\IUnique;
 use App\Rules\PasswordRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class AddUserRequest extends FormRequest
 {
@@ -31,14 +31,13 @@ class AddUserRequest extends FormRequest
                 'required',
                 'max:50',
                 'email',
-                Rule::unique('users')->where(function ($query) {
-                    $where_clause = "LOWER(email) = LOWER(?)";
-
-                    return $query->whereRaw(
-                        $where_clause,
-                        [$this->get('email')]
-                    );
-                }),
+                (new IUnique(
+                    'users',
+                    'Email',
+                    [
+                        'email' => $this->get('email'),
+                    ]
+                )),
             ],
             'password' => [
                 'required',
@@ -55,7 +54,7 @@ class AddUserRequest extends FormRequest
             'name' => 'Name',
             'email' => 'Email',
             'password' => 'Password',
-            'is_admin' => 'IsAdmin',
+            'is_admin' => 'Is Admin',
         ];
     }
 }

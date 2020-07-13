@@ -2,31 +2,25 @@
 
 namespace App\Http\Requests\Question;
 
-use Illuminate\Validation\Rule;
+use App\Rules\IUnique;
 
 class EditQuestionRequest extends AddQuestionRequest
 {
     public function rules()
     {
         $rules = parent::rules();
-
         $rules['text'] = [
             'required',
             'max:255',
-            Rule::unique('questions')->where(function ($query) {
-                $where_clause = "
-                    LOWER(text) = LOWER(?) AND quiz_id = ? AND id <> ?
-                ";
-
-                return $query->whereRaw(
-                    $where_clause,
-                    [
-                        $this->get('text'),
-                        $this->get('quiz_id'),
-                        $this->route('id'),
-                    ]
-                );
-            }),
+            (new IUnique(
+                'questions',
+                'Question',
+                [
+                    'text' => $this->get('text'),
+                    'quiz_id' => $this->get('quiz_id'),
+                ],
+                $this->route('id')
+            )),
         ];
 
         return $rules;
