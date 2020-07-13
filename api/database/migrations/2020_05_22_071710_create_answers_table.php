@@ -15,10 +15,9 @@ class CreateAnswersTable extends Migration
     {
         Schema::create('answers', function (Blueprint $table) {
             $table->id();
-            $table->string('value', 100);
+            $table->string('value', 255);
             $table->boolean('is_true');
-            $table->integer('question_id');
-            $table->timestamps();
+            $table->integer('question_id')->index();
 
             $table->unique(['value', 'question_id']);
 
