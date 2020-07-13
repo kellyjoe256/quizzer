@@ -27,6 +27,13 @@ abstract class AbstractController extends Controller
      */
     protected $updateRequest;
 
+    /**
+     * Default pagination limit
+     *
+     * @var int
+     */
+    protected $limit;
+
     public function __construct(
         RepositoryInterface $repository,
         string $resource,
@@ -37,6 +44,8 @@ abstract class AbstractController extends Controller
         $this->resource = $resource;
         $this->createRequest = $createRequest;
         $this->updateRequest = $updateRequest;
+
+        $this->limit = config('custom.per_page', 10);
     }
 
     public function store()
@@ -48,9 +57,9 @@ abstract class AbstractController extends Controller
             ->setStatusCode(201);
     }
 
-    public function show($id, array $relations = [])
+    public function show($id)
     {
-        $model = $this->repository->find($id, $relations);
+        $model = $this->repository->find($id);
 
         return new $this->resource($model);
     }
@@ -102,5 +111,13 @@ abstract class AbstractController extends Controller
     protected function transformFromRequest()
     {
         return [];
+    }
+
+    protected function collection($paginated_data)
+    {
+        return call_user_func(
+            array($this->resource, 'collection'),
+            $paginated_data
+        );
     }
 }

@@ -6,7 +6,7 @@ use App\Http\Controllers\AbstractController as Controller;
 use App\Http\Requests\Question\AddQuestionRequest;
 use App\Http\Requests\Question\EditQuestionRequest;
 use App\Http\Resources\Question\QuestionResource;
-use App\Repositories\QuestionRepository;
+use App\Repositories\Question\QuestionRepository;
 
 class QuestionController extends Controller
 {
@@ -23,17 +23,15 @@ class QuestionController extends Controller
     public function index()
     {
         $sort_order = [
-            'created_at' => 'DESC',
-            'text' => 'ASC',
+            'created_at' => 'desc',
+            'text' => 'asc',
         ];
+        $limit = (int) request('limit', $this->limit);
+        $questions = $this->repository
+            ->filter(request())
+            ->sort($sort_order)
+            ->paginate($limit);
 
-        if (request('quiz')) {
-            return $this->repository->findByQuiz(
-                (int) request('quiz'),
-                $sort_order
-            );
-        }
-
-        return $this->repository->paginate($sort_order);
+        return $this->collection($questions);
     }
 }

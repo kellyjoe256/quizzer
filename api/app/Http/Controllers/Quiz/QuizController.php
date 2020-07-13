@@ -6,7 +6,7 @@ use App\Http\Controllers\AbstractController as Controller;
 use App\Http\Requests\Quiz\AddQuizRequest;
 use App\Http\Requests\Quiz\EditQuizRequest;
 use App\Http\Resources\Quiz\QuizResource;
-use App\Repositories\QuizRepository;
+use App\Repositories\Quiz\QuizRepository;
 
 class QuizController extends Controller
 {
@@ -22,13 +22,30 @@ class QuizController extends Controller
 
     public function index()
     {
+        $relations = [];
         $user = request()->user();
-        $sort_order = ['name' => 'ASC'];
-
-        if (!$user->is_admin) {
-            return $this->repository->findByUser($user->id, $sort_order);
+        if ($user && $user->is_admin) {
+            $relations = ['user'];
         }
 
-        return $this->repository->paginate($sort_order);
+        $sort_order = [
+            'created_at' => 'desc',
+            'name' => 'asc',
+        ];
+        $limit = (int) request('limit', $this->limit);
+        $quizzes = $this->repository
+            ->with($relations)
+            ->filter(request())
+            ->sort($sort_order)
+            ->paginate($limit);
+
+        return $this->collection($quizzes);
+    }
+
+    public function show($id)
+    {
+        $quiz = $this->repository->filter(request())->find($id);
+
+        return new $this->resource($quiz);
     }
 }
