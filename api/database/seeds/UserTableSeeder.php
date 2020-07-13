@@ -16,7 +16,7 @@ class UserTableSeeder extends Seeder
 
         User::insert([
             'name' => 'Wafukho Kelly Joseph',
-            'email' => 'kelly@example.com',
+            'email' => 'admin@example.com',
             'password' => bcrypt('password'),
             'is_admin' => true,
             'created_at' => \Carbon\Carbon::now(),
