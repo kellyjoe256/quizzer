@@ -1,0 +1,24 @@
+html,
+body {
+    background: #f2f6fa;
+}
+
+.navbar.is-white .navbar-brand > a.navbar-item.is-active {
+    background-color: inherit;
+}
+
+.container .columns {
+    margin: 3rem 0;
+}
+
+.top-nav {
+    border-top: 5px solid #3498db;
+
+    .container {
+        border-bottom: 1px solid #e6eaee;
+    }
+
+    .navbar-brand a.navbar-item {
+        text-transform: uppercase;
+    }
+}

@@ -1,0 +1,29 @@
+<!-- prettier-ignore -->
+<b-navbar class="is-white top-nav" wrapper-class="container">
+    <template slot="brand">
+        <b-navbar-item tag="router-link" :to="{ path: '/' }" exact>
+            Quizzer
+        </b-navbar-item>
+    </template>
+
+    <template slot="start">
+        <b-navbar-item
+            tag="router-link"
+            :to="{ name: authenticated ? 'dashboard' : 'home' }"
+            exact
+        >
+            {{ authenticated ? 'Dashboard' : 'Home' }}
+        </b-navbar-item>
+    </template>
+
+    <template slot="end">
+        <b-navbar-dropdown v-if="authenticated" :label="user.name">
+            <b-navbar-item href="#" @click.prevent="logout">
+                Logout
+            </b-navbar-item>
+        </b-navbar-dropdown>
+        <b-navbar-item tag="router-link" :to="{ name: 'login' }" exact v-else>
+            Login
+        </b-navbar-item>
+    </template>
+</b-navbar>
