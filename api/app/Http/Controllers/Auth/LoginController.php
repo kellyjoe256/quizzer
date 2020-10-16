@@ -10,14 +10,12 @@ class LoginController extends Controller
     public function __invoke(LoginRequest $request)
     {
         $credentials = $request->all(['email', 'password']);
-
         if (!$token = auth()->attempt($credentials)) {
             return response()->json(
                 ['error' => 'Email or Password incorrect'],
                 401
             );
         }
-
         $cookie = $this->makeCookie($token);
 
         return response()->json(auth()->user())->withCookie($cookie);
@@ -33,12 +31,12 @@ class LoginController extends Controller
     private function makeCookie($token)
     {
         return cookie(
-            config('custom.access_cookie_name'),
+            config('custom.access_cookie_name', '_token'),
             $token,
-            auth()->factory()->getTTL(),
+            config('custom.access_cookie_duration', 60),
             null,
             null,
-            env('APP_DEBUG') ? false : true,
+            isset($_SERVER['HTTPS']),
             true,
             false,
             'Strict'
