@@ -30,6 +30,7 @@ class QuizRepository extends AbstractRepository implements FilterInterface
     /**
      * Remove user query filter parameters if available in query string
      *
+     * @param Request $request
      * @return void
      */
     protected function removeUserQueryParams(Request $request)
