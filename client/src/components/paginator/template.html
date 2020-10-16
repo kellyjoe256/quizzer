@@ -1,0 +1,29 @@
+<div id="paginator">
+    <b-field>
+        <b-select
+            :placeholder="String(pagination.per_page)"
+            @input="changeLimit"
+        >
+            <option value="10">10</option>
+            <option value="25">25</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+        </b-select>
+    </b-field>
+    <slot></slot>
+    <b-pagination
+            v-if="pagination.total && pagination.last_page > 1"
+            :total="pagination.total"
+            :per-page="pagination.per_page"
+            :current="pagination.current_page"
+            @change="changePage"
+            order="is-centered"
+            icon-prev="chevron-left"
+            icon-next="chevron-right"
+            aria-next-label="Next page"
+            aria-previous-label="Previous page"
+            aria-page-label="Page"
+            aria-current-label="Current page"
+    />
+</div>
+

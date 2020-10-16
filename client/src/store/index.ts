@@ -2,11 +2,14 @@
 import Vue from 'vue';
 import Vuex, { ActionTree, GetterTree, MutationTree } from 'vuex';
 import modules from '@/store/modules';
+import { Pagination } from '@/types';
 
 Vue.use(Vuex);
 
 class State {
     message = null;
+
+    pagination: Pagination = {};
 
     statusCode = null;
 }
@@ -14,6 +17,10 @@ class State {
 const getters = <GetterTree<State, any>>{
     message(state) {
         return state.message;
+    },
+
+    pagination(state) {
+        return state.pagination;
     },
 };
 
@@ -30,6 +37,10 @@ const actions = <ActionTree<State, any>>{
 const mutations = <MutationTree<State>>{
     SET_MESSAGE(state, message) {
         state.message = message;
+    },
+
+    SET_PAGINATION(state, payload) {
+        state.pagination = payload;
     },
 
     SET_STATUS_CODE(state, statusCode) {

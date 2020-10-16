@@ -66,5 +66,5 @@ export default {
 <style lang="scss">
 @import '~bulma';
 @import '~buefy/src/scss/buefy';
-@import './assets/css/main.scss';
+@import 'assets/scss/main.scss';
 </style>

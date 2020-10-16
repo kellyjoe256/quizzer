@@ -11,13 +11,16 @@
             tag="router-link"
             :to="{ name: authenticated ? 'dashboard' : 'home' }"
             exact
-        >
-            {{ authenticated ? 'Dashboard' : 'Home' }}
-        </b-navbar-item>
+        >{{ authenticated ? 'Dashboard' : 'Home' }}</b-navbar-item>
+        <b-navbar-item
+            v-if="authenticated"
+            tag="router-link"
+            :to="{ name: 'quizzes' }"
+        >Quizzes</b-navbar-item>
     </template>
 
     <template slot="end">
-        <b-navbar-dropdown v-if="authenticated" :label="user.name">
+        <b-navbar-dropdown :label="user.name" v-if="authenticated">
             <b-navbar-item href="#" @click.prevent="logout">
                 Logout
             </b-navbar-item>

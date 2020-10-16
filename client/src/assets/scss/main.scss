@@ -22,3 +22,17 @@ body {
         text-transform: uppercase;
     }
 }
+
+.pagination > ul {
+    list-style: none;
+}
+
+h1 > a {
+    font-size: 50%;
+    font-weight: normal;
+    text-decoration: underline;
+}
+
+table a {
+    text-decoration: underline;
+}

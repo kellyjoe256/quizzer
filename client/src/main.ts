@@ -2,6 +2,10 @@ import Vue from 'vue';
 import VueMeta from 'vue-meta';
 import VueProgressBar from 'vue-progressbar';
 import Buefy from 'buefy';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { fas } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import filters from '@/mixins/filters';
 import App from './App.vue';
 import router from './router';
 import store from './store';
@@ -22,8 +26,26 @@ Vue.use(VueProgressBar, {
     location: 'top',
     inverse: false,
 });
+// Buefy
+library.add(fas);
+Vue.component('vue-fontawesome', FontAwesomeIcon);
 Vue.use(Buefy, {
+    defaultIconComponent: 'vue-fontawesome',
     defaultIconPack: 'fas',
+    customIconPacks: {
+        fas: {
+            sizes: {
+                default: 'lg',
+                'is-small': '1x',
+                'is-medium': '2x',
+                'is-large': '3x',
+            },
+            iconPrefix: '',
+        },
+    },
+});
+Vue.mixin({
+    filters,
 });
 
 Vue.config.productionTip = false;
