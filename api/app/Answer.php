@@ -9,8 +9,6 @@ class Answer extends Model
 {
     use Filter;
 
-    public $timestamps = false;
-
     protected $fillable = [
         'value', 'is_true', 'question_id',
     ];
