@@ -6,23 +6,23 @@
                     <!-- prettier-ignore -->
                     <div class="box content">
                         <h1>
-                            Create Question
+                            Create Answer
                             <span>
                                 <router-link
                                     :to="{
-                                        name: 'questions',
+                                        name: 'answers',
                                         query: {
-                                            quiz_id: $route.query.quiz_id,
+                                            question_id: $route.query.question_id,
                                         }
                                     }"
-                                >Questions</router-link>
+                                >Answers</router-link>
                             </span>
                         </h1>
 
-                        <question-form
+                        <answer-form
                             :form-data="form"
                             :form-rules="rules"
-                            @save:question="create"
+                            @save:answer="create"
                         />
                     </div>
                 </div>
@@ -33,19 +33,19 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import QuestionForm from '@/views/questions/Form.vue';
-import { formData, formRules } from '@/views/questions/validation';
+import AnswerForm from '@/views/answers/Form.vue';
+import { formData, formRules } from '@/views/answers/validation';
 
 @Component({
-    name: 'CreateQuestion',
+    name: 'CreateAnswer',
     components: {
-        QuestionForm,
+        AnswerForm,
     },
     metaInfo: {
-        title: 'Create Question',
+        title: 'Create Answer',
     },
 })
-export default class CreateQuestion extends Vue {
+export default class CreateAnswer extends Vue {
     form = { ...formData };
 
     rules = formRules();
@@ -53,20 +53,20 @@ export default class CreateQuestion extends Vue {
     /* eslint-disable @typescript-eslint/camelcase, consistent-return */
     create(payload) {
         const { query } = this.$route;
-        const { quiz_id } = query;
+        const { question_id } = query;
 
-        if (!quiz_id) {
+        if (!question_id) {
             return this.$router.replace({ name: 'quizzes' });
         }
 
         this.$Progress.start();
         this.$store
-            .dispatch('questions/save', { ...payload, quiz_id })
+            .dispatch('answers/save', { ...payload, question_id })
             .then(() => {
                 this.$Progress.finish();
                 this.$router.replace({
-                    name: 'questions',
-                    query: { quiz_id },
+                    name: 'answers',
+                    query: { question_id },
                 });
             })
             .catch(() => this.$Progress.fail());

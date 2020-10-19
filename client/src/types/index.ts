@@ -25,6 +25,15 @@ export interface Question {
     updated_at?: string | null;
 }
 
+export interface Answer {
+    id?: number;
+    value?: string;
+    is_true?: boolean;
+    question_id?: number | null;
+    created_at?: string | null;
+    updated_at?: string | null;
+}
+
 export interface Pagination {
     current_page?: number;
     from?: number;

@@ -1,54 +1,50 @@
 <template>
-    <div class="quizzes">
+    <div class="questions">
         <section class="container">
             <div class="columns">
                 <div class="column">
                     <div class="box content" v-if="show">
                         <!-- prettier-ignore -->
                         <h1>
-                            Quizzes
+                            {{ question.text }} Answers
                             <span>
-                                <router-link :to="{ name: 'quizzes.create' }">
-                                    Create
-                                </router-link>
+                                <router-link
+                                    :to="{
+                                        name: 'questions',
+                                        query: {
+                                            quiz_id: question.quiz_id,
+                                        }
+                                    }"
+                                >Questions</router-link>
+                                |
+                                <router-link
+                                    :to="{
+                                        name: 'answers.create',
+                                        query: {
+                                            question_id: question.id,
+                                        }
+                                    }"
+                                >Create</router-link>
                             </span>
                         </h1>
                         <paginator :store-action="storeAction">
-                            <b-table :data="quizzes" striped hoverable>
+                            <b-table :data="answers" striped hoverable>
                                 <template slot-scope="props">
-                                    <b-table-column field="name" label="Name">
-                                        {{ props.row.name }}
+                                    <b-table-column field="value" label="Answer">
+                                        {{ props.row.value }}
                                     </b-table-column>
-                                    <b-table-column field="description" label="Description">
-                                        {{ props.row.description }}
+                                    <b-table-column field="is_true" label="Is correct?">
+                                        {{ props.row.is_true ? 'True' : 'False' }}
                                     </b-table-column>
                                     <b-table-column field="created_at" label="Created on">
                                         {{ props.row.created_at | datetime }}
                                     </b-table-column>
-                                    <b-table-column
-                                        v-if="user.is_admin"
-                                        field="user"
-                                        label="Created by"
-                                    >
-                                        {{ props.row.user ? props.row.user.email : '' }}
-                                    </b-table-column>
                                     <!-- prettier-ignore -->
                                     <b-table-column field="id">
                                         <router-link
-                                            class="has-text-black"
-                                            :title="`${props.row.name} Questions`"
-                                            :to="{
-                                                name: 'questions',
-                                                query: {
-                                                    quiz_id: props.row.id,
-                                                }
-                                            }"
-                                        >Questions</router-link>
-                                        |
-                                        <router-link
                                             title="Edit"
                                             :to="{
-                                                name: 'quizzes.edit',
+                                                name: 'answers.edit',
                                                 params: {
                                                     id: props.row.id,
                                                 }
@@ -76,37 +72,45 @@
 import { Component, Vue } from 'vue-property-decorator';
 import isEmpty from 'lodash/isEmpty';
 import Paginator from '@/components/paginator';
+import { Question } from '@/types';
 
 @Component({
-    name: 'Quizzes',
     metaInfo: {
-        title: 'Quizzes',
+        title: 'Answers',
     },
     components: {
         Paginator,
     },
 })
-export default class Quizzes extends Vue {
+export default class Answers extends Vue {
     show = false;
 
-    storeAction = 'quizzes/get';
+    question: Question = {};
 
-    get user() {
-        return this.$store.getters['auth/user'];
-    }
+    storeAction = 'answers/get';
 
-    get quizzes() {
-        return this.$store.getters['quizzes/quizzes'];
+    get answers() {
+        return this.$store.getters['answers/answers'];
     }
 
     mounted() {
-        this.$Progress.start();
+        const { query } = this.$route;
+        const questionId = Number(query.question_id) || 0;
 
+        this.$Progress.start();
+        // check if quiz exists
         this.$store
-            .dispatch(this.storeAction, this.$route.query)
-            .then(() => {
-                this.show = true;
-                this.$Progress.finish();
+            .dispatch('questions/getOne', questionId)
+            .then((question) => {
+                this.question = question;
+                // fetch answers that belong to that particular quiz
+                this.$store
+                    .dispatch(this.storeAction, query)
+                    .then(() => {
+                        this.show = true;
+                        this.$Progress.finish();
+                    })
+                    .catch(console.log);
             })
             .catch((e) => {
                 console.log(e);
@@ -114,17 +118,25 @@ export default class Quizzes extends Vue {
             });
     }
 
-    erase(id: number) {
+    /* eslint-disable @typescript-eslint/camelcase */
+    erase(id) {
         // eslint-disable-next-line
         if (!confirm('Are you sure?')) {
             return;
         }
 
+        const { id: question_id } = this.question;
+
         this.$store
-            .dispatch('quizzes/erase', id)
+            .dispatch('answers/erase', { id, question_id })
             .then(() => {
-                if (!isEmpty(this.$route.query)) {
-                    this.$router.replace({ query: {} }).catch(console.log);
+                const { query } = this.$route;
+                if (!isEmpty(query) && Object.keys(query).length > 1) {
+                    this.$router
+                        .replace({
+                            query: { question_id },
+                        })
+                        .catch(console.log);
                 }
                 this.$Progress.finish();
             })

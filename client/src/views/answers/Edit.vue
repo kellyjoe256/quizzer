@@ -6,23 +6,23 @@
                     <!-- prettier-ignore -->
                     <div class="box content" v-if="showForm">
                         <h1>
-                            Edit Question
+                            Edit Answer
                             <span>
                                 <router-link
                                     :to="{
-                                        name: 'questions',
+                                        name: 'answers',
                                         query: {
-                                            quiz_id: question.quiz_id,
+                                            question_id: answer.question_id,
                                         },
                                     }"
-                                >Questions</router-link>
+                                >Answers</router-link>
                             </span>
                         </h1>
 
-                        <question-form
+                        <answer-form
                             :form-data="form"
                             :form-rules="rules"
-                            @save:question="edit"
+                            @save:answer="edit"
                         />
                     </div>
                 </div>
@@ -33,55 +33,55 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import QuestionForm from '@/views/questions/Form.vue';
-import { formData, formRules } from '@/views/questions/validation';
-import { Question } from '@/types';
+import AnswerForm from '@/views/answers/Form.vue';
+import { formData, formRules } from '@/views/answers/validation';
+import { Answer } from '@/types';
 
 @Component({
-    name: 'EditQuestion',
+    name: 'EditAnswer',
     components: {
-        QuestionForm,
+        AnswerForm,
     },
     metaInfo: {
-        title: 'Edit Question',
+        title: 'Edit Answer',
     },
 })
-export default class EditQuestion extends Vue {
+export default class EditAnswer extends Vue {
     form = { ...formData };
 
     rules = formRules();
 
     showForm = false;
 
-    question: Question = {};
+    answer: Answer = {};
 
     mounted() {
         const { params } = this.$route;
 
         this.$Progress.start();
         this.$store
-            .dispatch('questions/getOne', params.id)
-            .then((question) => {
+            .dispatch('answers/getOne', params.id)
+            .then((answer) => {
                 this.$Progress.finish();
                 this.showForm = true;
-                this.form = { ...question };
-                this.question = question;
+                this.form = { ...answer };
+                this.answer = answer;
             })
             .catch(() => this.$Progress.fail());
     }
 
     /* eslint-disable @typescript-eslint/camelcase */
     edit(payload) {
-        const { quiz_id } = this.question;
+        const { question_id } = this.answer;
 
         this.$Progress.start();
         this.$store
-            .dispatch('questions/save', payload)
+            .dispatch('answers/save', payload)
             .then(() => {
                 this.$Progress.finish();
                 this.$router.replace({
-                    name: 'questions',
-                    query: { quiz_id },
+                    name: 'answers',
+                    query: { question_id },
                 });
             })
             .catch(() => this.$Progress.fail());

@@ -18,6 +18,12 @@ const QuestionsIndex = () => import('@/views/questions/Index.vue');
 const CreateQuestion = () => import('@/views/questions/Create.vue');
 const EditQuestion = () => import('@/views/questions/Edit.vue');
 
+// questions
+const AnswersBase = () => import('@/views/answers/Base.vue');
+const AnswersIndex = () => import('@/views/answers/Index.vue');
+const CreateAnswer = () => import('@/views/answers/Create.vue');
+const EditAnswer = () => import('@/views/answers/Edit.vue');
+
 const routes: RouteConfig[] = [
     {
         path: '/',
@@ -94,6 +100,40 @@ const routes: RouteConfig[] = [
                 path: ':id/edit',
                 name: 'questions.edit',
                 component: EditQuestion,
+                meta: {
+                    auth: true,
+                },
+            },
+        ],
+    },
+    // answers
+    {
+        path: '/answers',
+        component: AnswersBase,
+        meta: {
+            auth: true,
+        },
+        children: [
+            {
+                path: '',
+                name: 'answers',
+                component: AnswersIndex,
+                meta: {
+                    auth: true,
+                },
+            },
+            {
+                path: 'create',
+                name: 'answers.create',
+                component: CreateAnswer,
+                meta: {
+                    auth: true,
+                },
+            },
+            {
+                path: ':id/edit',
+                name: 'answers.edit',
+                component: EditAnswer,
                 meta: {
                     auth: true,
                 },

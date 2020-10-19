@@ -7,14 +7,20 @@
                         <!-- prettier-ignore -->
                         <h1>
                             {{ quiz.name }} Questions
-                            <router-link
-                                :to="{
-                                    name: 'questions.create',
-                                    query: {
-                                        quiz_id: quiz.id,
-                                    }
-                                }"
-                            >Create</router-link>
+                            <span>
+                                <router-link
+                                    :to="{ name: 'quizzes' }"
+                                >Quizzes</router-link>
+                                |
+                                <router-link
+                                    :to="{
+                                        name: 'questions.create',
+                                        query: {
+                                            quiz_id: quiz.id,
+                                        }
+                                    }"
+                                >Create</router-link>
+                            </span>
                         </h1>
                         <paginator :store-action="storeAction">
                             <b-table :data="questions" striped hoverable>
@@ -27,11 +33,16 @@
                                     </b-table-column>
                                     <!-- prettier-ignore -->
                                     <b-table-column field="id">
-                                        <a
+                                        <router-link
                                             class="has-text-black"
-                                            title="Answer"
-                                            :href="`#${props.row.id}`"
-                                        >Answers</a>
+                                            :title="`${props.row.text} Answers`"
+                                            :to="{
+                                                name: 'answers',
+                                                query: {
+                                                    question_id: props.row.id,
+                                                }
+                                            }"
+                                        >Answers</router-link>
                                         |
                                         <router-link
                                             title="Edit"
@@ -61,14 +72,13 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import { Component } from 'vue-property-decorator';
-// import isEmpty from 'lodash/isEmpty';
+import { Component, Vue } from 'vue-property-decorator';
 import Paginator from '@/components/paginator';
 import { Quiz } from '@/types';
 import isEmpty from 'lodash/isEmpty';
 
 @Component({
+    name: 'Questions',
     metaInfo: {
         title: 'Questions',
     },
@@ -89,7 +99,7 @@ export default class Questions extends Vue {
 
     mounted() {
         const { query } = this.$route;
-        const quizId = query.quiz_id || 0;
+        const quizId = Number(query.quiz_id) || 0;
 
         this.$Progress.start();
         // check if quiz exists

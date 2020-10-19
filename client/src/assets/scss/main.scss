@@ -27,9 +27,12 @@ body {
     list-style: none;
 }
 
-h1 > a {
+h1 > span {
     font-size: 50%;
     font-weight: normal;
+}
+
+h1 > span > a {
     text-decoration: underline;
 }
 

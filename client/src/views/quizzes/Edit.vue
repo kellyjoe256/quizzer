@@ -7,9 +7,11 @@
                     <div class="box content">
                         <h1>
                             Edit Quiz
-                            <router-link :to="{ name: 'quizzes' }">
-                                Quizzes
-                            </router-link>
+                            <span>
+                                <router-link :to="{ name: 'quizzes' }">
+                                    Quizzes
+                                </router-link>
+                            </span>
                         </h1>
 
                         <quiz-form
