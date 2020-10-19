@@ -18,11 +18,17 @@ const QuestionsIndex = () => import('@/views/questions/Index.vue');
 const CreateQuestion = () => import('@/views/questions/Create.vue');
 const EditQuestion = () => import('@/views/questions/Edit.vue');
 
-// questions
+// answers
 const AnswersBase = () => import('@/views/answers/Base.vue');
 const AnswersIndex = () => import('@/views/answers/Index.vue');
 const CreateAnswer = () => import('@/views/answers/Create.vue');
 const EditAnswer = () => import('@/views/answers/Edit.vue');
+
+// users
+const UsersBase = () => import('@/views/users/Base.vue');
+const UsersIndex = () => import('@/views/users/Index.vue');
+const CreateUser = () => import('@/views/users/Create.vue');
+const EditUser = () => import('@/views/users/Edit.vue');
 
 const routes: RouteConfig[] = [
     {
@@ -136,6 +142,44 @@ const routes: RouteConfig[] = [
                 component: EditAnswer,
                 meta: {
                     auth: true,
+                },
+            },
+        ],
+    },
+    // users
+    {
+        path: '/users',
+        component: UsersBase,
+        meta: {
+            auth: true,
+            admin: true,
+        },
+        children: [
+            {
+                path: '',
+                name: 'users',
+                component: UsersIndex,
+                meta: {
+                    auth: true,
+                    admin: true,
+                },
+            },
+            {
+                path: 'create',
+                name: 'users.create',
+                component: CreateUser,
+                meta: {
+                    auth: true,
+                    admin: true,
+                },
+            },
+            {
+                path: ':id/edit',
+                name: 'users.edit',
+                component: EditUser,
+                meta: {
+                    auth: true,
+                    admin: true,
                 },
             },
         ],

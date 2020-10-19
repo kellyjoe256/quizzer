@@ -78,7 +78,7 @@ const actions = <ActionTree<State, any>>{
                 text: 'Answer deleted successfully',
             };
             await dispatch('flashMessage', message, { root: true });
-            await dispatch('get', { question_id }); // get the left over quizzes
+            await dispatch('get', { question_id }); // get the left over answers
 
             return Promise.resolve();
         } catch (error) {

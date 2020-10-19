@@ -1,5 +1,5 @@
 <template>
-    <div class="quizzes">
+    <div class="answers">
         <section class="container">
             <div class="columns">
                 <div class="column">

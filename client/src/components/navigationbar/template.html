@@ -17,6 +17,11 @@
             tag="router-link"
             :to="{ name: 'quizzes' }"
         >Quizzes</b-navbar-item>
+        <b-navbar-item
+            v-if="authenticated && user.is_admin"
+            tag="router-link"
+            :to="{ name: 'users' }"
+        >Users</b-navbar-item>
     </template>
 
     <template slot="end">

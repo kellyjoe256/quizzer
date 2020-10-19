@@ -1,17 +1,19 @@
 import { Component, Vue } from 'vue-property-decorator';
-import { mapGetters } from 'vuex';
 import WithRender from './template.html';
 
 @WithRender
 @Component({
-    computed: {
-        ...mapGetters({
-            user: 'auth/user',
-            authenticated: 'auth/authenticated',
-        }),
-    },
+    name: 'NavigationBar',
 })
 export default class NavigationBar extends Vue {
+    get user() {
+        return this.$store.getters['auth/user'];
+    }
+
+    get authenticated() {
+        return this.$store.getters['auth/authenticated'];
+    }
+
     private logout() {
         const name = 'login'; // route to go to after logging out
 
