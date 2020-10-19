@@ -1,18 +1,18 @@
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
+/* eslint-disable @typescript-eslint/consistent-type-assertions, @typescript-eslint/camelcase */
 import { ActionTree, GetterTree, MutationTree } from 'vuex';
 import _ from 'lodash';
-import { PaginatorQuery, Quiz } from '@/types';
+import { PaginatorQuery, Question } from '@/types';
 import http from '@/services/http';
 
-const baseURL = 'quizzes';
+const baseURL = 'questions';
 
 class State {
-    quizzes: Quiz[] = [];
+    questions: Question[] = [];
 }
 
 const getters = <GetterTree<State, any>>{
-    quizzes(state): Quiz[] {
-        return state.quizzes;
+    questions(state): Question[] {
+        return state.questions;
     },
 };
 
@@ -22,11 +22,11 @@ const actions = <ActionTree<State, any>>{
             const { data } = await http.get(`${baseURL}`, {
                 params,
             });
-            const { data: quizzes, meta: paginationMeta } = data;
-            commit('SET_QUIZZES', quizzes);
+            const { data: questions, meta: paginationMeta } = data;
+            commit('SET_QUESTIONS', questions);
             commit('SET_PAGINATION', paginationMeta, { root: true });
 
-            return Promise.resolve(quizzes);
+            return Promise.resolve(questions);
         } catch (error) {
             return Promise.reject(error);
         }
@@ -37,7 +37,7 @@ const actions = <ActionTree<State, any>>{
         const method = id ? 'PUT' : 'POST';
         const url = id ? `${baseURL}/${id}` : baseURL;
         // prettier-ignore
-        const fields = ['name', 'description', 'user_id'];
+        const fields = ['text', 'quiz_id'];
 
         try {
             const { data } = await http.wrapper({
@@ -47,7 +47,7 @@ const actions = <ActionTree<State, any>>{
             });
             const message = {
                 type: 'is-success',
-                text: `Quiz ${action}ed successfully`,
+                text: `Question ${action}ed successfully`,
             };
             await dispatch('flashMessage', message, { root: true });
 
@@ -67,16 +67,18 @@ const actions = <ActionTree<State, any>>{
             return Promise.reject(error);
         }
     },
-    async erase({ dispatch }, id: number) {
+    async erase({ dispatch }, payload) {
+        const { id, quiz_id } = payload;
+
         try {
             await http.delete(`${baseURL}/${id}`);
 
             const message = {
                 type: 'is-success',
-                text: 'Quiz deleted successfully',
+                text: 'Question deleted successfully',
             };
             await dispatch('flashMessage', message, { root: true });
-            await dispatch('get', {}); // get the left over quizzes
+            await dispatch('get', { quiz_id }); // get the left over quizzes
 
             return Promise.resolve();
         } catch (error) {
@@ -86,8 +88,8 @@ const actions = <ActionTree<State, any>>{
 };
 
 const mutations = <MutationTree<State>>{
-    SET_QUIZZES(state, payload) {
-        state.quizzes = payload;
+    SET_QUESTIONS(state, payload) {
+        state.questions = payload;
     },
 };
 

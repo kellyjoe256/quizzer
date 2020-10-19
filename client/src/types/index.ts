@@ -17,6 +17,14 @@ export interface Quiz {
     user?: User | null;
 }
 
+export interface Question {
+    id?: number;
+    text?: string;
+    quiz_id?: number | null;
+    created_at?: string | null;
+    updated_at?: string | null;
+}
+
 export interface Pagination {
     current_page?: number;
     from?: number;

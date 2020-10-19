@@ -1,52 +1,42 @@
 <template>
-    <div class="quizzes">
+    <div class="questions">
         <section class="container">
             <div class="columns">
                 <div class="column">
                     <div class="box content" v-if="show">
                         <!-- prettier-ignore -->
                         <h1>
-                            Quizzes
-                            <router-link :to="{ name: 'quizzes.create' }">
-                                Create
-                            </router-link>
+                            {{ quiz.name }} Questions
+                            <router-link
+                                :to="{
+                                    name: 'questions.create',
+                                    query: {
+                                        quiz_id: quiz.id,
+                                    }
+                                }"
+                            >Create</router-link>
                         </h1>
                         <paginator :store-action="storeAction">
-                            <b-table :data="quizzes" striped hoverable>
+                            <b-table :data="questions" striped hoverable>
                                 <template slot-scope="props">
-                                    <b-table-column field="name" label="Name">
-                                        {{ props.row.name }}
-                                    </b-table-column>
-                                    <b-table-column field="description" label="Description">
-                                        {{ props.row.description }}
+                                    <b-table-column field="text" label="Question">
+                                        {{ props.row.text }}
                                     </b-table-column>
                                     <b-table-column field="created_at" label="Created on">
                                         {{ props.row.created_at | datetime }}
                                     </b-table-column>
-                                    <b-table-column
-                                        v-if="user.is_admin"
-                                        field="user"
-                                        label="Created by"
-                                    >
-                                        {{ props.row.user ? props.row.user.email : '' }}
-                                    </b-table-column>
                                     <!-- prettier-ignore -->
                                     <b-table-column field="id">
-                                        <router-link
+                                        <a
                                             class="has-text-black"
-                                            :title="`${props.row.name} Questions`"
-                                            :to="{
-                                                name: 'questions',
-                                                query: {
-                                                    quiz_id: props.row.id,
-                                                }
-                                            }"
-                                        >Questions</router-link>
+                                            title="Answer"
+                                            :href="`#${props.row.id}`"
+                                        >Answers</a>
                                         |
                                         <router-link
                                             title="Edit"
                                             :to="{
-                                                name: 'quizzes.edit',
+                                                name: 'questions.edit',
                                                 params: {
                                                     id: props.row.id,
                                                 }
@@ -73,38 +63,48 @@
 <script lang="ts">
 import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
-import isEmpty from 'lodash/isEmpty';
+// import isEmpty from 'lodash/isEmpty';
 import Paginator from '@/components/paginator';
+import { Quiz } from '@/types';
+import isEmpty from 'lodash/isEmpty';
 
 @Component({
     metaInfo: {
-        title: 'Quizzes',
+        title: 'Questions',
     },
     components: {
         Paginator,
     },
 })
-export default class Quizzes extends Vue {
+export default class Questions extends Vue {
     show = false;
 
-    storeAction = 'quizzes/get';
+    quiz: Quiz = {};
 
-    get user() {
-        return this.$store.getters['auth/user'];
-    }
+    storeAction = 'questions/get';
 
-    get quizzes() {
-        return this.$store.getters['quizzes/quizzes'];
+    get questions() {
+        return this.$store.getters['questions/questions'];
     }
 
     mounted() {
-        this.$Progress.start();
+        const { query } = this.$route;
+        const quizId = query.quiz_id || 0;
 
+        this.$Progress.start();
+        // check if quiz exists
         this.$store
-            .dispatch(this.storeAction, this.$route.query)
-            .then(() => {
-                this.show = true;
-                this.$Progress.finish();
+            .dispatch('quizzes/getOne', quizId)
+            .then((quiz) => {
+                this.quiz = quiz;
+                // fetch questions that belong to that particular quiz
+                this.$store
+                    .dispatch(this.storeAction, query)
+                    .then(() => {
+                        this.show = true;
+                        this.$Progress.finish();
+                    })
+                    .catch(console.log);
             })
             .catch((e) => {
                 console.log(e);
@@ -112,17 +112,25 @@ export default class Quizzes extends Vue {
             });
     }
 
-    erase(id: number) {
+    /* eslint-disable @typescript-eslint/camelcase */
+    erase(id) {
         // eslint-disable-next-line
         if (!confirm('Are you sure?')) {
             return;
         }
 
+        const { id: quiz_id } = this.quiz;
+
         this.$store
-            .dispatch('quizzes/erase', id)
+            .dispatch('questions/erase', { id, quiz_id })
             .then(() => {
-                if (!isEmpty(this.$route.query)) {
-                    this.$router.replace({ query: {} }).catch(console.log);
+                const { query } = this.$route;
+                if (!isEmpty(query) && Object.keys(query).length > 1) {
+                    this.$router
+                        .replace({
+                            query: { quiz_id },
+                        })
+                        .catch(console.log);
                 }
                 this.$Progress.finish();
             })

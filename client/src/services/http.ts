@@ -11,6 +11,7 @@ interface HttpErrorMessage {
 
 axios.defaults.baseURL = BASE_URL;
 axios.defaults.headers.accept = 'application/json';
+axios.defaults.headers.common['Content-Type'] = 'application/json';
 axios.defaults.withCredentials = true;
 
 axios.interceptors.response.use(undefined, (error) => {

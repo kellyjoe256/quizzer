@@ -12,6 +12,12 @@ const QuizzesIndex = () => import('@/views/quizzes/Index.vue');
 const CreateQuiz = () => import('@/views/quizzes/Create.vue');
 const EditQuiz = () => import('@/views/quizzes/Edit.vue');
 
+// questions
+const QuestionsBase = () => import('@/views/questions/Base.vue');
+const QuestionsIndex = () => import('@/views/questions/Index.vue');
+const CreateQuestion = () => import('@/views/questions/Create.vue');
+const EditQuestion = () => import('@/views/questions/Edit.vue');
+
 const routes: RouteConfig[] = [
     {
         path: '/',
@@ -54,6 +60,40 @@ const routes: RouteConfig[] = [
                 path: ':id/edit',
                 name: 'quizzes.edit',
                 component: EditQuiz,
+                meta: {
+                    auth: true,
+                },
+            },
+        ],
+    },
+    // questions
+    {
+        path: '/questions',
+        component: QuestionsBase,
+        meta: {
+            auth: true,
+        },
+        children: [
+            {
+                path: '',
+                name: 'questions',
+                component: QuestionsIndex,
+                meta: {
+                    auth: true,
+                },
+            },
+            {
+                path: 'create',
+                name: 'questions.create',
+                component: CreateQuestion,
+                meta: {
+                    auth: true,
+                },
+            },
+            {
+                path: ':id/edit',
+                name: 'questions.edit',
+                component: EditQuestion,
                 meta: {
                     auth: true,
                 },
