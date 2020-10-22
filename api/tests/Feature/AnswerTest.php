@@ -7,7 +7,7 @@ use Tests\TestCase;
 
 class AnswerTest extends TestCase
 {
-    use CreateUser, CreateQuestion;
+    use CreateQuestion;
 
     private $answer_route = '/api/answers';
 
