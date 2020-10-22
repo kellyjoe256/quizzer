@@ -18,6 +18,7 @@ class CreateAnswersTable extends Migration
             $table->string('value', 255);
             $table->boolean('is_true');
             $table->integer('question_id')->index();
+            $table->timestamps();
 
             $table->unique(['value', 'question_id']);
 
