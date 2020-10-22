@@ -29,7 +29,7 @@
                                         <input
                                             class="input is-medium"
                                             :class="{ 'is-danger': hasError('password') }"
-                                            type="password"
+                                            :type="showPassword ? 'text' : 'password'"
                                             placeholder="Password"
                                             v-model="form.password"
                                         />
@@ -37,6 +37,9 @@
                                             {{ getError('password') }}
                                         </p>
                                     </div>
+                                </div>
+                                <div class="field">
+                                    <b-checkbox v-model="showPassword">Show password</b-checkbox>
                                 </div>
                                 <button class="button is-block is-primary is-fullwidth is-medium">
                                     Login
@@ -76,6 +79,7 @@ export default formMixin.extend({
                     'any.required': 'Password is required',
                 }),
             }),
+            showPassword: false,
         };
     },
     methods: {
