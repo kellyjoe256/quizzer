@@ -15,21 +15,40 @@ class UserTableSeeder extends Seeder
     {
         User::truncate();
 
+        $password = 'password';
         User::insert([
-            [
-                'name' => 'John Doe',
-                'email' => 'admin@example.com',
-                'password' => bcrypt('password'),
-                'is_admin' => true,
-                'created_at' => Carbon::now(),
-            ],
-            [
-                'name' => 'Jane Doe',
-                'email' => 'demo@example.com',
-                'password' => bcrypt('password'),
-                'is_admin' => false,
-                'created_at' => Carbon::now(),
-            ],
+            $this->data(
+                'John Doe',
+                'admin@example.com',
+                $password,
+                true
+            ),
+            $this->data(
+                'Jane Doe',
+                'demo@example.com',
+                $password
+            ),
         ]);
+    }
+
+    /**
+     * User creation data
+     *
+     * @param string $name
+     * @param string $email
+     * @param string $password
+     * @param bool $is_admin
+     *
+     * @return array
+     */
+    public function data($name, $email, $password, $is_admin = false)
+    {
+        return [
+            'name' => $name,
+            'email' => $email,
+            'password' => bcrypt($password),
+            'is_admin' => $is_admin,
+            'created_at' => Carbon::now(),
+        ];
     }
 }
