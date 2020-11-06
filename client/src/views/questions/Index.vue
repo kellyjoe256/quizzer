@@ -102,12 +102,12 @@ export default class Questions extends Vue {
         const quizId = Number(query.quiz_id) || 0;
 
         this.$Progress.start();
-        // check if quizzer exists
+        // check if quiz exists
         this.$store
             .dispatch('quizzes/getOne', quizId)
             .then((quiz) => {
                 this.quiz = quiz;
-                // fetch questions that belong to that particular quizzer
+                // fetch questions that belong to that particular quiz
                 this.$store
                     .dispatch(this.storeAction, query)
                     .then(() => {
@@ -138,6 +138,7 @@ export default class Questions extends Vue {
                 if (!isEmpty(query) && Object.keys(query).length > 1) {
                     this.$router
                         .replace({
+                            // @ts-expect-error
                             query: { quiz_id },
                         })
                         .catch(console.log);

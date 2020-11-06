@@ -81,6 +81,7 @@ export default class EditQuestion extends Vue {
                 this.$Progress.finish();
                 this.$router.replace({
                     name: 'questions',
+                    // @ts-expect-error
                     query: { quiz_id },
                 });
             })

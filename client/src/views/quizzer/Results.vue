@@ -54,6 +54,7 @@ export default class Results extends Vue {
 
     answerIsCorrect(answer: Answer[] | Answer): boolean {
         if (!Array.isArray(answer)) {
+            // @ts-expect-error
             return answer.is_true;
         }
 

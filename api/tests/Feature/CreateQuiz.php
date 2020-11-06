@@ -12,7 +12,7 @@ trait CreateQuiz
     {
         return [
             'name' => 'Science Quiz',
-            'description' => 'This is a _wonderful_ quizzer',
+            'description' => 'This is a _wonderful_ quiz',
             'user_id' => null,
         ];
     }

@@ -52,7 +52,7 @@ export default class TakeQuiz extends Vue {
 
     private quiz: Quiz | null = null;
 
-    private answeredQuestions: any[] = [];
+    private answeredQuestions: Question[] = [];
 
     private currentQuestion: Question | null = null;
 
@@ -81,6 +81,7 @@ export default class TakeQuiz extends Vue {
     }
 
     get questions(): Question[] {
+        // @ts-expect-error
         const { questions } = this.quiz;
 
         if (!questions || !questions.length) {

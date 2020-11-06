@@ -81,6 +81,7 @@ export default class EditAnswer extends Vue {
                 this.$Progress.finish();
                 this.$router.replace({
                     name: 'answers',
+                    // @ts-expect-error
                     query: { question_id },
                 });
             })

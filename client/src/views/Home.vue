@@ -66,6 +66,7 @@ export default class Home extends Vue {
     }
 
     changePage(page: number) {
+        // @ts-expect-error
         this.$router.replace({ query: { page } }).catch(console.log);
         this.getQuizzes(page);
     }
