@@ -8,7 +8,7 @@ use App\Filters\Question\Filters\QuizFilter;
 class QuestionFilter extends AbstractModelFilter
 {
     protected $filters = [
-        'quiz' => QuizFilter::class,
+        'quizzer' => QuizFilter::class,
         'quiz_id' => QuizFilter::class,
     ];
 }

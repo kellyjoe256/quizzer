@@ -67,6 +67,20 @@ const actions = <ActionTree<State, any>>{
             return Promise.reject(error);
         }
     },
+    async takeQuiz({ commit }, params) {
+        const { id, ...rest } = params;
+        const url = `${baseURL}/${id}`;
+
+        try {
+            const { data } = await http.get(url, {
+                params: { ...rest },
+            });
+
+            return Promise.resolve(data.data);
+        } catch (error) {
+            return Promise.reject(error);
+        }
+    },
     async erase({ dispatch }, id: number) {
         try {
             await http.delete(`${baseURL}/${id}`);

@@ -15,6 +15,7 @@ export interface Quiz {
     created_at?: string | null;
     updated_at?: string | null;
     user?: User | null;
+    [key: string]: any;
 }
 
 export interface Question {
@@ -23,6 +24,7 @@ export interface Question {
     quiz_id?: number | null;
     created_at?: string | null;
     updated_at?: string | null;
+    [key: string]: any;
 }
 
 export interface Answer {
@@ -32,6 +34,7 @@ export interface Answer {
     question_id?: number | null;
     created_at?: string | null;
     updated_at?: string | null;
+    [key: string]: any;
 }
 
 export interface Pagination {
@@ -41,10 +44,11 @@ export interface Pagination {
     per_page?: number;
     to?: number;
     total?: number;
+    [key: string]: any;
 }
 
 export interface PaginatorQuery {
-    [key: string]: any;
     page: number;
     limit: number;
+    [key: string]: any;
 }

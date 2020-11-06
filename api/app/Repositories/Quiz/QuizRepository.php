@@ -14,7 +14,7 @@ class QuizRepository extends AbstractRepository implements FilterInterface
         $user = $request->user();
         $this->removeUserQueryParams($request);
         if ($user && !$user->is_admin) {
-            // find a quiz or quizzes that belong to current user
+            // find a quizzer or quizzes that belong to current user
             $request->query->set('user', $user->id);
         }
         $this->builder = $this->builder->filter($request);

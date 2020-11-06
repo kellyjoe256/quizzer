@@ -98,12 +98,12 @@ export default class Answers extends Vue {
         const questionId = Number(query.question_id) || 0;
 
         this.$Progress.start();
-        // check if quiz exists
+        // check if quizzer exists
         this.$store
             .dispatch('questions/getOne', questionId)
             .then((question) => {
                 this.question = question;
-                // fetch answers that belong to that particular quiz
+                // fetch answers that belong to that particular quizzer
                 this.$store
                     .dispatch(this.storeAction, query)
                     .then(() => {

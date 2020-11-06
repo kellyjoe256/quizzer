@@ -1,6 +1,7 @@
 import { RouteConfig } from 'vue-router';
 
 const Home = () => import('@/views/Home.vue');
+const TakeQuiz = () => import('@/views/quizzer/Index.vue');
 const Dashboard = () => import('@/views/Dashboard.vue');
 const Login = () => import('@/views/Login.vue');
 const Error = () => import('@/views/Error.vue');
@@ -35,6 +36,11 @@ const routes: RouteConfig[] = [
         path: '/',
         name: 'home',
         component: Home,
+    },
+    {
+        path: '/:id/take_quiz',
+        name: 'take_quiz',
+        component: TakeQuiz,
     },
     {
         path: '/dashboard',

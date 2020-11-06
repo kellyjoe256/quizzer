@@ -67,7 +67,7 @@ export default class QuizForm extends Mixins(formMixin) {
             return;
         }
 
-        this.$emit('save:quiz', {
+        this.$emit('save:quizzer', {
             ...this.form,
             // eslint-disable-next-line
             user_id: this.user.id,
