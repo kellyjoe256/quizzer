@@ -15,6 +15,17 @@ cd api
 clear && ./vendor/bin/phpunit --colors=always --stop-on-failure
 ```
 
-FRONTEND
+### Frontend
 
 The ui is developed with vue + typescript.
+
+### Demo
+
+You can check out the demo at this [link](https://quizzer.mayatsa-demo.com).
+
+You can use the following credentials to login if you need to poke around
+
+```bash
+EMAIL: admin@example.com or demo@example.com
+PASSWORD: password
+```
