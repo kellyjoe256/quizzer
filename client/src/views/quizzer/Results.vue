@@ -14,7 +14,12 @@
             <h4>{{ answeredQuestion.question.text }}</h4>
             <p>
                 Your answer:
-                <span :class="highlightClass(answeredQuestion.answer)">
+                <span
+                    :class="highlightClass(
+                        answeredQuestion.answer,
+                        answeredQuestion.question
+                    )"
+                >
                     {{ showChosenAnswer(answeredQuestion.answer) }}
                 </span>
             </p>
@@ -52,28 +57,37 @@ export default class Results extends Vue {
             .join(this.separator);
     }
 
-    answerIsCorrect(answer: Answer[] | Answer): boolean {
+    answerIsCorrect(answer: Answer[] | Answer, question: Question): boolean {
         if (!Array.isArray(answer)) {
             // @ts-expect-error
             return answer.is_true;
         }
 
-        return answer.every((a) => a.is_true);
+        if (answer.some((a) => a.is_true === false)) {
+            return false;
+        }
+
+        const numOfCorrectAnswers = question.answers.filter((a) => a.is_true).length;
+
+        return numOfCorrectAnswers === answer.length;
     }
 
-    highlightClass(answer: Answer[] | Answer): string {
+    highlightClass(answer: Answer[] | Answer, question: Question): string {
         const prefix = 'has-text';
 
-        return this.answerIsCorrect(answer) ? `${prefix}-success` : `${prefix}-danger`;
+        // prettier-ignore
+        return this.answerIsCorrect(answer, question)
+            ? `${prefix}-success`
+            : `${prefix}-danger`;
     }
 
     get correctAnswers(): number {
         let count = 0;
 
         this.answeredQuestions.forEach((answeredQuestion) => {
-            const { answer } = answeredQuestion;
+            const { answer, question } = answeredQuestion;
 
-            if (Array.isArray(answer) && answer.every((a) => a.is_true)) {
+            if (Array.isArray(answer) && this.answerIsCorrect(answer, question)) {
                 count += 1;
             } else if (answer.is_true) {
                 count += 1;
