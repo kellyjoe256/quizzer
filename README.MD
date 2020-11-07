@@ -2,7 +2,7 @@
 
 Quiz application where users are presented with different quizzes with
  their specific questions and expected to choose the right answer(s). Results
-  are then shown to user at the end of the quiz.
+  are then shown to the user at the end of the quiz.
 
 ### Backend
 
